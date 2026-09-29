@@ -1,7 +1,10 @@
-let scene, camera, renderer, cube;
+let scene, camera, renderer;
+let cube, cylinder, cone;
 
 function init() {
+
   scene = new THREE.Scene();
+
   camera = new THREE.PerspectiveCamera(
     65,
     window.innerWidth / window.innerHeight,
@@ -9,45 +12,139 @@ function init() {
     1000
   );
 
-  renderer = new THREE.WebGLRenderer({ antialias: true });
+  renderer = new THREE.WebGLRenderer({
+    antialias: true
+  });
 
-  renderer.setSize(window.innerWidth, window.innerHeight);
+  renderer.setSize(
+    window.innerWidth,
+    window.innerHeight
+  );
 
   document.body.appendChild(renderer.domElement);
 
-  /* ボックスのサイズ決定、メッシュ、追加 */
-  const geometry = new THREE.BoxGeometry(2, 2, 2);
-  const texture = new THREE.TextureLoader().load("textures/renga.png");
 
-  const material = new THREE.MeshBasicMaterial({
-     map: texture 
-  
-});
+  /* --------------------
+     立方体
+     -------------------- */
 
+  const cubeGeometry = new THREE.BoxGeometry(
+    2,
+    2,
+    2
+  );
 
-  cube = new THREE.Mesh(geometry, material);
+  const texture = new THREE.TextureLoader().load(
+    "textures/renga.png"
+  );
+
+  const cubeMaterial = new THREE.MeshBasicMaterial({
+    map: texture
+  });
+
+  cube = new THREE.Mesh(
+    cubeGeometry,
+    cubeMaterial
+  );
+
+  cube.position.x = -4;
+
   scene.add(cube);
 
-  camera.position.z = 5; /* カメラの位置を手前に変更 */
+
+  /* --------------------
+     円筒
+     -------------------- */
+
+  const cylinderGeometry = new THREE.CylinderGeometry(
+    1,
+    1,
+    2,
+    32
+  );
+
+  const cylinderMaterial = new THREE.MeshBasicMaterial({
+    color: 0x00ff00
+  });
+
+  cylinder = new THREE.Mesh(
+    cylinderGeometry,
+    cylinderMaterial
+  );
+
+  cylinder.position.x = 0;
+
+  scene.add(cylinder);
+
+
+  /* --------------------
+     円錐
+     -------------------- */
+
+  const coneGeometry = new THREE.ConeGeometry(
+    1,
+    2,
+    32
+  );
+
+  const coneMaterial = new THREE.MeshBasicMaterial({
+    color: 0x0000ff
+  });
+
+  cone = new THREE.Mesh(
+    coneGeometry,
+    coneMaterial
+  );
+
+  cone.position.x = 4;
+
+  scene.add(cone);
+
+
+  camera.position.z = 8;
 }
 
-/* アニメーション制御 */
+
 function animate() {
-  requestAnimationFrame(animate); /* ループ */
-  cube.rotation.x += 0.01; /* x軸を中心として回転 */
-  cube.rotation.y += 0.01; /* y軸を中心として回転 */
 
-  renderer.render(scene, camera);
+  requestAnimationFrame(animate);
+
+  cube.rotation.x += 0.01;
+  cube.rotation.y += 0.01;
+
+  cylinder.rotation.x += 0.01;
+  cylinder.rotation.y += 0.01;
+
+  cone.rotation.x += 0.01;
+  cone.rotation.y += 0.01;
+
+  renderer.render(
+    scene,
+    camera
+  );
 }
 
-/* ウィンドウ変更時にサイズを維持する処理 */
+
 function onWindowResize() {
-  camera.aspect = window.innerWidth / window.innerHeight;
+
+  camera.aspect =
+    window.innerWidth /
+    window.innerHeight;
+
   camera.updateProjectionMatrix();
-  renderer.setSize(window.innerWidth, window.innerHeight);
+
+  renderer.setSize(
+    window.innerWidth,
+    window.innerHeight
+  );
 }
 
-window.addEventListener("resize", onWindowResize);
+
+window.addEventListener(
+  "resize",
+  onWindowResize
+);
+
 
 init();
 animate();
